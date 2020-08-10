@@ -73,6 +73,8 @@ router.put('/:id', (req, res) => {
 
 	// if req.body has exact key/value pairs to match the model, you can just use 'req.body' instead of the explicit version seen above in the .create example
 	User.update(req.body, {
+    // option needed for beforeUpdate hook (bcrypt.hash) to be effective
+    individualHooks: true,
 		where : {
 			id : req.params.id
 		}

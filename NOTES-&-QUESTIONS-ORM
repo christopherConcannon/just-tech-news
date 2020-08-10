@@ -1,7 +1,10 @@
+ORM -- OBJECT RELATIONAL MAPPING
+
+
 The biggest benefit that an ORM like Sequelize offers is sparing us from spending a lot of time writing SQL to define our tables and queries. Instead, we can use object-oriented concepts to model our database tables using JavaScript classes. This lets us add validators and custom rules to the SQL data where SQL sometimes falls short.
 
 
-
+KEEPING SENSITIVE DATA SECURE -- DEVELOPMENT VARIABLES
 what we can do is set up local environment variables for development, then use the production environment variables when we deploy to Heroku. This means that our sensitive data will not be exposed when we push to GitHub!
 
 To do this, we'll need to install another NPM package called dotenv. From the command line, run the following code:
@@ -32,8 +35,92 @@ Notice how we don't have to save the require('dotenv') to a variable? All we nee
 Remember to add .env to your .gitignore file.
 
 
+
+SEQUELIZE - ORM
+
+
 When we learned about JavaScript constructors and classes, we also learned how to make the application's dataflow consistent when we create a blueprint of how certain data should look and be interacted with. When we create a SQL table, we perform a similar action. We provide names for what columns the data will go into and what types of data we expect for that column.
 
 Sequelize goes a step further by taking object-oriented JavaScript concepts and applying them to how we set up the SQL tables. This is done by using Sequelize's model class where, essentially, we create our own JavaScript class and define the columns, data types, and any other rules we need the data to adhere to.
 
 This class will serve as a layer between the API and the database and will handle all transactions of data between the two. As we'll see, it'll provide a lot more flexibility and functionality that we would otherwise have to create on our own
+
+
+STEPS
+
+Model the data.
+
+Set up API routes to work with that data.
+
+Test the routes to make sure everything works as intended.
+
+Repeat with new model.
+
+
+CREATE LOGIN ROUTE -- PROTECTING USER DATA
+
+An application's first interaction with a user's password occurs the moment that user creates an account. At that time, we must intervene and hash the plaintext password before it is stored in the database.
+
+Hashing performs a one-way transformation on a password, turning the password into another string, called the hashed password. 'One-way' means that it is practically impossible to go the other way—to turn the hashed password back into the original password."
+
+We'll use a node package called bcrypt to perform the hashing function. We could've chosen other alternatives, but bcrypt has a proven, consistent track record of security. Its popularity and adoption by different computer languages further underscores its value.
+
+
+At the root directory, install bcrypt, as shown in the following code:
+
+npm install bcrypt
+
+Next, import bcrypt into the User.js file by adding the require expression at the top of the file, as shown in the following code:
+
+const bcrypt = require('bcrypt');
+
+Now that the User model has access to bcrypt, how do we use it to hash the password?
+
+According to the bcrypt page on npm, we can use the hash function. (Links to an external site.)
+
+The documentation recommends using an async function. Let's choose one that will return the hashed password in a Promise, as shown in the following image:
+
+The hash method from bcrypt will return a hashed password.
+
+This method will autogenerate a salt. Notice the saltRounds parameter. This is known as the cost factor and controls how many rounds of hashing are done by the bcrypt algorithm. The more hashing rounds, the longer it takes to hash, the more time it would take to crack using a brute-force attack.
+
+where can we use this function in the course of the application? In other words, how do we inject this logic to occur just before a user is created?
+
+Thankfully, we can use special Sequelize functions called hooks in the model. Also known as lifecycle events, hooks are functions that are called before or after calls in Sequelize.
+
+According to the Sequelize documents, to use hooks, we must pass in another object labelled hooks to the User.init() function.
+
+
+
+hooks: {
+  // set up beforeCreate lifecycle "hook" functionality
+  beforeCreate(userData) {
+    return bcrypt.hash(userData.password, 10).then(newUserData => {
+      return newUserData
+    });
+  }
+}
+Let's break down this code to see what is happening. We use the beforeCreate() hook to execute the bcrypt hash function on the plaintext password. In the bcrypt hash function, we pass in the userData object that contains the plaintext password in the password property. We also pass in a saltRound value of 10.
+
+The resulting hashed password is then passed to the Promise object as a newUserData object with a hashed password property. The return statement then exits out of the function, returning the hashed password in the newUserData function.
+
+That seems a bit complex for such a simple async function. Notice how we needed to create two different local variables, userData and newUserData? It's a bit clunky and hard to follow due to the two variables that store the pre-hash and post-hash data, userData and newUserData, respectively.
+
+ASYNC/AWAIT
+
+Good thing there is another method to handle async functions that will make the code more concise and legible. We will use the async/await syntax to replace the Promise.
+
+Let's replace the function above using Promises with the new version of the exact same functionality with the async/await syntax, as shown in the code below:
+
+hooks: {
+  // set up beforeCreate lifecycle "hook" functionality
+  async beforeCreate(newUserData) {
+    newUserData.password = await bcrypt.hash(newUserData.password, 10);
+    return newUserData;
+  },
+}
+The keyword pair, async/await, works in tandem to make this async function look more like a regular synchronous function expression.
+
+The async keyword is used as a prefix to the function that contains the asynchronous function. await can be used to prefix the async function, which will then gracefully assign the value from the response to the newUserData's password property. The newUserData is then returned to the application with the hashed password.
+
+Comparing these two functions side by side, we can see that the async/await version is much easier to read with only a single newUserData variable that is input and output after the password hashing modification. Now the async function looks like a plain old JavaScript expression.

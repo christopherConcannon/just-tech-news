@@ -2,6 +2,7 @@
 
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
+const bcrypt = require('bcrypt');
 
 // create our User model
 class User extends Model {}
@@ -50,6 +51,29 @@ User.init(
 		}
 	},
 	{
+		// The nested level of the object inserted is very important. Notice that the hooks property was added to the second object in User.init().
+		hooks           : {
+			// set up beforeCreate lifecycle 'hook' functionality
+			// beforeCreate(userData) {
+			//   return bcrypt.hash(userData.password, 10).then(newUserData => {
+			//     return newUserData
+			//   });
+			// }
+
+			// The keyword pair, async/await, works in tandem to make this async function look more like a regular synchronous function expression.
+      // The async keyword is used as a prefix to the function that contains the asynchronous function. await can be used to prefix the asynchronous function, which will then gracefully assign the value from the response to the newUserData's password property. The newUserData is then returned to the application with the hashed password.  So, the 'async' pre-fixed function will wait to execute until the 'await'-prefixed (asynchronous) function has completed.
+      
+			async beforeCreate(newUserData) {
+				newUserData.password = await bcrypt.hash(newUserData.password, 10);
+				return newUserData;
+      },
+      
+      // set up beforeUpdate lifecycle 'hook' functionality.  Before we can check to see if this hook is effective however, we must add an option to the query call in the user-routes.js file for the User.update function in the PUT route to update the password.. According to the Sequelize documentation regarding the beforeUpdate (Links to an external site.), we will need to add the option { individualHooks: true }.
+      async beforeUpdate(updatedUserData) {
+        updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
+        return updatedUserData;
+      }
+		},
 		// TABLE CONFIGURATION OPTIONS GO HERE (https://sequelize.org/v5/manual/models-definition.html#configuration)
 
 		// pass in our imported sequelize connection (the direct connection to our database)
@@ -75,7 +99,7 @@ module.exports = User;
 
 // Each column's definition gets its own type definition, in which we use the imported Sequelize DataTypes object to define what type of data it will be. We can also apply other options found in SQL, such as allowNull, which is NOT NULL in SQL, and autoIncrement, which is AUTO INCREMENT in MySQL.
 
-// Sequelize's built-in validators are another great feature. We can use them to ensure any email data follows the pattern of an email address (i.e., <string>@<string>.<string>) so no one can give us incorrect data. There are a lot of prebuilt validators we can use from Sequelize, but you can also make your own, 
+// Sequelize's built-in validators are another great feature. We can use them to ensure any email data follows the pattern of an email address (i.e., <string>@<string>.<string>) so no one can give us incorrect data. There are a lot of prebuilt validators we can use from Sequelize, but you can also make your own,
 
 // Lastly, export the newly created model so we can use it in other parts of the app.
 
