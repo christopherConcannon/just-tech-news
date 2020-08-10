@@ -1,0 +1,39 @@
+The biggest benefit that an ORM like Sequelize offers is sparing us from spending a lot of time writing SQL to define our tables and queries. Instead, we can use object-oriented concepts to model our database tables using JavaScript classes. This lets us add validators and custom rules to the SQL data where SQL sometimes falls short.
+
+
+
+what we can do is set up local environment variables for development, then use the production environment variables when we deploy to Heroku. This means that our sensitive data will not be exposed when we push to GitHub!
+
+To do this, we'll need to install another NPM package called dotenv. From the command line, run the following code:
+
+npm install dotenv
+
+Once that's installed, at the root of your application create a file called .env and add the following code:
+
+DB_NAME='just_tech_news_db'
+DB_USER='your-mysql-username'
+DB_PW='your-mysql-password'
+That's all you have to do to set up these environment variables. Next, load them into the connection.js file. Let's update that file to look like the following code:
+
+const Sequelize = require('sequelize');
+
+require('dotenv').config();
+
+// create connection to our db
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PW, {
+  host: 'localhost',
+  dialect: 'mysql',
+  port: 3306
+});
+
+module.exports = sequelize;
+Notice how we don't have to save the require('dotenv') to a variable? All we need it to do here is execute when we use connection.js and all of the data in the .env file will be made available at process.env.<ENVIRONMENT-VARIABLE-NAME>.
+
+Remember to add .env to your .gitignore file.
+
+
+When we learned about JavaScript constructors and classes, we also learned how to make the application's dataflow consistent when we create a blueprint of how certain data should look and be interacted with. When we create a SQL table, we perform a similar action. We provide names for what columns the data will go into and what types of data we expect for that column.
+
+Sequelize goes a step further by taking object-oriented JavaScript concepts and applying them to how we set up the SQL tables. This is done by using Sequelize's model class where, essentially, we create our own JavaScript class and define the columns, data types, and any other rules we need the data to adhere to.
+
+This class will serve as a layer between the API and the database and will handle all transactions of data between the two. As we'll see, it'll provide a lot more flexibility and functionality that we would otherwise have to create on our own
