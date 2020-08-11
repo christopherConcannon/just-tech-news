@@ -12,9 +12,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(routes);
 
 // turn on connection to db and server
-sequelize.sync({ force: false }).then(() => {
-  // This definition { force: true } performs similarly to DROP TABLE IF EXISTS, which was used previously. This allows the table to be overwritten and re-created.  We only want to drop the tables so the application can re-create them and implement the associations between our models.  But dropping all the tables every time the application restarts is no longer necessary once the associations have been made, and in fact will constantly drop all the entries and seed data we enter, which can get very annoying, so change it back to false once the associations are updated
 // sequelize.sync({ force: true }).then(() => {
+  // This definition { force: true } performs similarly to DROP TABLE IF EXISTS, which was used previously. This allows the table to be overwritten and re-created.  We only want to drop the tables so the application can re-create them and implement the associations between our models.  But dropping all the tables every time the application restarts is no longer necessary once the associations have been made, and in fact will constantly drop all the entries and seed data we enter, which can get very annoying, so change it back to false once the associations are updated
+sequelize.sync({ force: false }).then(() => {
 	app.listen(PORT, () => console.log('Now listening'));
 });
 

@@ -269,3 +269,8 @@ WHAT IS A MODEL?
 
 WORKFLOW
 seasoned developers would argue that it makes more sense to build each section of the app at a time to lessen the cognitive jumping around. For instance, creating all the models at once could help inform the data associations and relationships better. This makes a degree of sense due to the fact that much of the code between these files is quite similar. The same goes for the routes.
+
+MANY TO MANY RELATIONSHIPS
+ Using Sequelize, we just created a one-to-many relationship that connects the User and Post models, in which users can create many posts and posts belong to a single user. In one-to-many relationships like this, the owned data entity (i.e., the post that a user creates) holds a reference to its owner. The owner holds no reference to the data it owns, to prevent unnecessary duplication.
+
+But now we want to allow many users to vote on many posts, creating a many-to-many relationship. In this relationship, each side must hold a reference to its counterpart, as they each share ownership in a vote. So we need to create a third table, for the sole purpose of connecting the data between two other tables with their primary keys. 

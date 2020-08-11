@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { User } = require('../../models');
+const { User, Post, Vote } = require('../../models');
 
 // GET /api/users
 router.get('/', (req, res) => {
@@ -7,14 +7,14 @@ router.get('/', (req, res) => {
 	// SELECT * FROM users;
 
 	User.findAll({
-    // don't send password value back to client!  we provide an attributes (columns) key and instruct the query to exclude the password column. It's in an array because if we want to exclude more than one, we can just add more.
-    attributes: { exclude: ['password'] }
-  })
-    .then((dbUserData) => res.json(dbUserData))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
-	});
+		// don't send password value back to client!  we provide an attributes (columns) key and instruct the query to exclude the password column. It's in an array because if we want to exclude more than one, we can just add more.
+		attributes : { exclude: [ 'password' ] }
+	})
+		.then((dbUserData) => res.json(dbUserData))
+		.catch((err) => {
+			console.log(err);
+			res.status(500).json(err);
+		});
 });
 
 // GET /api/users/1
@@ -23,10 +23,22 @@ router.get('/:id', (req, res) => {
 	// SELECT * FROM users WHERE id = 1
 
 	User.findOne({
-    attributes: { exclude: ['password'] },
-		where : {
+		attributes : { exclude: [ 'password' ] },
+		where      : {
 			id : req.params.id
-		}
+		},
+		include    : [
+			{
+				model      : Post,
+				attributes : [ 'id', 'title', 'post_url', 'created_at' ]
+			},
+			{
+				model      : Post,
+				attributes : [ 'title' ],
+				through    : Vote,
+				as         : 'voted_posts'
+			}
+		]
 	})
 		.then((dbUserData) => {
 			if (!dbUserData) {
@@ -64,29 +76,29 @@ router.post('/', (req, res) => {
 
 // login
 router.post('/login', (req, res) => {
-  // Query operation
-  // expects {email: 'lernantino@gmail.com', password: 'password1234'}
-  User.findOne({
-    where: {
-      email: req.body.email
-    }
-  }).then(dbUserData => {
-    if (!dbUserData) {
-      res.status(400).json({ message: 'No user with that email address!' });
-      return;
-    }
+	// Query operation
+	// expects {email: 'lernantino@gmail.com', password: 'password1234'}
+	User.findOne({
+		where : {
+			email : req.body.email
+		}
+	}).then((dbUserData) => {
+		if (!dbUserData) {
+			res.status(400).json({ message: 'No user with that email address!' });
+			return;
+		}
 
-    // res.json({ user: dbUserData });
+		// res.json({ user: dbUserData });
 
-    // Verify user
-    const validPassword = dbUserData.checkPassword(req.body.password);
-    if (!validPassword) { 
-      res.status(400).json({ message: 'Incorrect password!' });
-      return;
-    }
+		// Verify user
+		const validPassword = dbUserData.checkPassword(req.body.password);
+		if (!validPassword) {
+			res.status(400).json({ message: 'Incorrect password!' });
+			return;
+		}
 
-    res.json({ user: dbUserData, message: 'You are now logged in!' });
-  });
+		res.json({ user: dbUserData, message: 'You are now logged in!' });
+	});
 });
 
 // PUT /api/users/1
@@ -100,9 +112,9 @@ router.put('/:id', (req, res) => {
 
 	// if req.body has exact key/value pairs to match the model, you can just use 'req.body' instead of the explicit version seen above in the .create example
 	User.update(req.body, {
-    // option needed for beforeUpdate hook (bcrypt.hash) to be effective
-    individualHooks: true,
-		where : {
+		// option needed for beforeUpdate hook (bcrypt.hash) to be effective
+		individualHooks : true,
+		where           : {
 			id : req.params.id
 		}
 	})
