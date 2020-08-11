@@ -2,3 +2,22 @@ node_modules/
 .DS_Store
 
 .env
+
+NOTES-&-QUESTIONS-ORM.txt
+
+server-ANNOTATED.js
+
+connection-ANNOTATED.js
+
+models/index-ANNOTATED.js
+Post-ANNOTATED.js
+User-ANNOTATED.js
+Vote-ANNOTATED.js
+
+routes/index-ANNOTATED.js
+
+routes/api/index-ANNOTATED.js
+post-routes-ANNOTATED.js
+user-routes-ANNOTATED.js
+
+
