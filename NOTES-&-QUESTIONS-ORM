@@ -255,3 +255,12 @@ router.post('/login', (req, res) => {
     res.json({ user: dbUserData, message: 'You are now logged in!' });
   });
 });
+
+
+WHAT IS A MODEL?
+.when setting up Sequelize to work with the database, we write models, somtimes known as schemas to construct the tables that we'll use.  using has the following benefits: 
+    --auto-building of tables so that we don't need to write SQL queries to do this manually
+    --data validation and restriction
+    --creating relationships between data, plus it's all written in JS
+
+.by default Sequelize creates 2 additional columns...createdAt and updatedAt which can be useful for our applications
