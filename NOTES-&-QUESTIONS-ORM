@@ -264,3 +264,8 @@ WHAT IS A MODEL?
     --creating relationships between data, plus it's all written in JS
 
 .by default Sequelize creates 2 additional columns...createdAt and updatedAt which can be useful for our applications
+
+
+
+WORKFLOW
+seasoned developers would argue that it makes more sense to build each section of the app at a time to lessen the cognitive jumping around. For instance, creating all the models at once could help inform the data associations and relationships better. This makes a degree of sense due to the fact that much of the code between these files is quite similar. The same goes for the routes.

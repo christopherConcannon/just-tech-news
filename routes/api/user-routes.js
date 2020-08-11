@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
 	// SELECT * FROM users;
 
 	User.findAll({
-    // don't send password value back to client!  we provide an attributes key and instruct the query to exclude the password column. It's in an array because if we want to exclude more than one, we can just add more.
+    // don't send password value back to client!  we provide an attributes (columns) key and instruct the query to exclude the password column. It's in an array because if we want to exclude more than one, we can just add more.
     attributes: { exclude: ['password'] }
   })
     .then((dbUserData) => res.json(dbUserData))
