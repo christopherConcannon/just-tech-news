@@ -113,22 +113,28 @@ router.put('/:id', (req, res) => {
 
 // DELETE /api/users/1
 router.delete('/:id', (req, res) => {
-	User.destroy({
+	Comment.destroy({
 		where : {
-			id : req.params.id
+			user_id : req.params.id
 		}
-	})
-		.then((dbUserData) => {
-			if (!dbUserData) {
-				res.status(404).json({ message: 'No user found with this id' });
-				return;
+	}).then(() => {
+		User.destroy({
+			where : {
+				id : req.params.id
 			}
-			res.json(dbUserData);
 		})
-		.catch((err) => {
-			console.log(err);
-			res.status(500).json(err);
-		});
+			.then((dbUserData) => {
+				if (!dbUserData) {
+					res.status(404).json({ message: 'No user found with this id' });
+					return;
+				}
+				res.json(dbUserData);
+			})
+			.catch((err) => {
+				console.log(err);
+				res.status(500).json(err);
+			});
+	});
 });
 
 module.exports = router;

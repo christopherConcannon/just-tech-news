@@ -4,6 +4,7 @@ node_modules/
 .env
 
 NOTES-&-QUESTIONS-ORM.txt
+ASSOCIATIONS-NOTES.txt
 
 server-ANNOTATED.js
 
