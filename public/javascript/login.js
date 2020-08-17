@@ -5,8 +5,9 @@ async function signupFormHandler(event) {
 	const email = document.querySelector('#email-signup').value.trim();
 	const password = document.querySelector('#password-signup').value.trim();
 
+  // if all signup fields are filled out, make POST request to create new user
 	if (username && email && password) {
-		const respone = await fetch('/api/users', {
+		const response = await fetch('/api/users', {
 			method  : 'post',
 			body    : JSON.stringify({
 				username,
@@ -26,6 +27,7 @@ async function signupFormHandler(event) {
 	}
 }
 
+// if all login fields are filled out, make POST request to validate user
 async function loginFormHandler(event) {
 	event.preventDefault();
 

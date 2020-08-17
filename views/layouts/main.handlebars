@@ -14,6 +14,8 @@
         <a href="/">Just Tech News</a>
       </h1>
       <nav>
+        {{!-- logout route is not an actual page so use button element styled as link.  it will have an event listener that calls /logout route --}}
+        <button id="logout" class="btn-no-style">logout</button>
         <a href="/login">login</a>
       </nav>
     </header>
@@ -24,5 +26,7 @@
       Thanks for visiting!
     </footer>
   </div>
+  {{!-- /logout route does not render it's own view so the front end script is included everywhere  --}}
+  <script src="/javascript/logout.js"></script>
 </body>
 </html>

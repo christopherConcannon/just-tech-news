@@ -14,7 +14,10 @@ Post-ANNOTATED.js
 User-ANNOTATED.js
 Vote-ANNOTATED.js
 
+
+
 routes/index-ANNOTATED.js
+controllers/index-ANNOTATED.js
 
 routes/api/index-ANNOTATED.js
 post-routes-ANNOTATED.js
