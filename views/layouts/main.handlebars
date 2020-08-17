@@ -15,8 +15,12 @@
       </h1>
       <nav>
         {{!-- logout route is not an actual page so use button element styled as link.  it will have an event listener that calls /logout route --}}
+        {{!-- variables passed to view templates are automatically passed to the main layout --}}
+        {{#if loggedIn}}
         <button id="logout" class="btn-no-style">logout</button>
+        {{else}}
         <a href="/login">login</a>
+        {{/if}}
       </nav>
     </header>
     <main>
@@ -27,6 +31,8 @@
     </footer>
   </div>
   {{!-- /logout route does not render it's own view so the front end script is included everywhere  --}}
+  {{#if loggedIn}}
   <script src="/javascript/logout.js"></script>
+  {{/if}}
 </body>
 </html>

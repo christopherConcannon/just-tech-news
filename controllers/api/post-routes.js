@@ -98,13 +98,21 @@ router.post('/', (req, res) => {
 		});
 });
 
+// Post upvote -- called from public/javascript/upvote.js
 router.put('/upvote', (req, res) => {
-	Post.upvote(req.body, { Vote })
-		.then((updatedPostData) => res.json(updatedPostData))
-		.catch((err) => {
-			console.log(err);
-			res.status(400).json(err);
-		});
+  console.log('***************************************************')
+  console.log(req.body);
+  console.log('***************************************************')
+  // make sure the session exists first (ie user logged in)
+  if (req.session) {
+    // pass session id along with all destructured properties on req.body
+    Post.upvote({...req.body, user_id: req.session.user_id },  { Vote })
+      .then((updatedPostData) => res.json(updatedPostData))
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json(err);
+      });
+  }
 });
 
 router.put('/:id', (req, res) => {
@@ -149,5 +157,6 @@ router.delete('/:id', (req, res) => {
 			res.status(500).json(err);
 		});
 });
+
 
 module.exports = router;

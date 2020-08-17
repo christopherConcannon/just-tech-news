@@ -2,9 +2,10 @@ const router = require('express').Router();
 const sequelize = require('../config/connection');
 const { Post, User, Comment } = require('../models');
 
+// homepage -- display index of all posts
 router.get('/', (req, res) => {
-  console.log(req.session);
-  // s%3AEm4S4x0Kv94N-IKMb4STuLfmPW16sJRM.bCJPsmDluLVHVSmefoiHc3XsquQPXqyyVjqftKunmBU
+	console.log(req.session);
+	// s%3AEm4S4x0Kv94N-IKMb4STuLfmPW16sJRM.bCJPsmDluLVHVSmefoiHc3XsquQPXqyyVjqftKunmBU
 
 	Post.findAll({
 		attributes : [
@@ -36,25 +37,95 @@ router.get('/', (req, res) => {
 		]
 	})
 		.then((dbPostData) => {
-      // pass a single post object into the homepage template
-      const posts = dbPostData.map(post => post.get({ plain: true }));
-      res.render('homepage', { posts });
-    })
+			// pass a single post object into the homepage template
+			const posts = dbPostData.map((post) => post.get({ plain: true }));
+      res.render('homepage', { 
+        posts,
+        loggedIn: req.session.loggedIn
+      });
+		})
 		.catch((err) => {
 			console.log(err);
 			res.status(500).json(err);
 		});
 });
 
+// single-post
+router.get('/post/:id', (req, res) => {
+  // // hardcode to test route 
+	// const post = {
+	// 	id         : 1,
+	// 	post_url   : 'https://handlebarsjs.com/guide/',
+	// 	title      : 'Handlebars Docs',
+	// 	created_at : new Date(),
+	// 	vote_count : 10,
+	// 	comments   : [ {}, {} ],
+	// 	user       : {
+	// 		username : 'test_user'
+	// 	}
+  // };
+  
+  Post.findOne({
+		where      : {
+			id : req.params.id
+		},
+		attributes : [
+			'id',
+			'post_url',
+			'title',
+			'created_at',
+			[
+				sequelize.literal(
+					'(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'
+				),
+				'vote_count'
+			]
+		],
+		include    : [
+			{
+				model      : Comment,
+				attributes : [ 'id', 'comment_text', 'post_id', 'user_id', 'created_at' ],
+				include    : {
+					model      : User,
+					attributes : [ 'username' ]
+				}
+			},
+			{
+				model      : User,
+				attributes : [ 'username' ]
+			}
+		]
+  })
+    .then((dbPostData) => {
+      if (!dbPostData) {
+        res.status(404).json({ message: 'No post found with this id' });
+        return;
+      }
+
+      // serialize the data
+      const post = dbPostData.get({ plain: true });
+
+      // pass data to template
+      res.render('single-post', { 
+        post,
+        loggedIn: req.session.loggedIn
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
+});
+
 // login
 router.get('/login', (req, res) => {
-  // check session variable...if user is logged in redirect to homepage
-  if (req.session.loggedIn) {
-    res.redirect('/');
-    return;
-  }
-  // otherwise render login page
-  res.render('login');
-})
+	// check session variable...if user is logged in redirect to homepage
+	if (req.session.loggedIn) {
+		res.redirect('/');
+		return;
+	}
+	// otherwise render login page
+	res.render('login');
+});
 
 module.exports = router;
