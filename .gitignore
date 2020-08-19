@@ -3,22 +3,45 @@ node_modules/
 
 .env
 
+<<<<<<< HEAD
 NOTES-&-QUESTIONS-ORM.txt
 ASSOCIATIONS-NOTES.txt
 
+=======
+# root
+>>>>>>> develop
 server-ANNOTATED.js
+server-ANNOTATED-V2.js
 
+# config
 connection-ANNOTATED.js
 
+# models
 models/index-ANNOTATED.js
 Post-ANNOTATED.js
 User-ANNOTATED.js
 Vote-ANNOTATED.js
 
-routes/index-ANNOTATED.js
 
-routes/api/index-ANNOTATED.js
+# controllers formerly routes
+controllers/index-ANNOTATED.js
+home-routes=ANNOTATED.js
+
+controllers/api/index-ANNOTATED.js
 post-routes-ANNOTATED.js
+post-routes-ANNOTATED-V2.js
 user-routes-ANNOTATED.js
+user-routes-ANNOTATED-V2.js
+
+# public
+logout-ANNOTATED.js
+
+# views
+main copy-ANNOTATED.handlebars
+homepage-ANNOTATED.handlebars
+single-post-ANNOTATED.handlebars
+
+comments-ANNOTATED.handlebars
+post-info-ANNOTATED.handlebars
 
 

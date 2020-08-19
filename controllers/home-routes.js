@@ -1,9 +1,9 @@
 const router = require('express').Router();
-const { Post, User, Vote, Comment } = require('../../models');
-const sequelize = require('../../config/connection');
+const sequelize = require('../config/connection');
+const { Post, User, Comment } = require('../models');
 
+// homepage -- display index of all posts
 router.get('/', (req, res) => {
-	console.log('====================');
 	Post.findAll({
 		attributes : [
 			'id',
@@ -33,14 +33,21 @@ router.get('/', (req, res) => {
 			}
 		]
 	})
-		.then((dbPostData) => res.json(dbPostData))
+		.then((dbPostData) => {
+			const posts = dbPostData.map((post) => post.get({ plain: true }));
+			res.render('homepage', {
+				posts,
+				loggedIn : req.session.loggedIn
+			});
+		})
 		.catch((err) => {
 			console.log(err);
 			res.status(500).json(err);
 		});
 });
 
-router.get('/:id', (req, res) => {
+// single-post
+router.get('/post/:id', (req, res) => {
 	Post.findOne({
 		where      : {
 			id : req.params.id
@@ -77,7 +84,15 @@ router.get('/:id', (req, res) => {
 				res.status(404).json({ message: 'No post found with this id' });
 				return;
 			}
-			res.json(dbPostData);
+
+			// serialize the data
+			const post = dbPostData.get({ plain: true });
+
+			// pass data to template
+			res.render('single-post', {
+				post,
+				loggedIn : req.session.loggedIn
+			});
 		})
 		.catch((err) => {
 			console.log(err);
@@ -85,69 +100,15 @@ router.get('/:id', (req, res) => {
 		});
 });
 
-router.post('/', (req, res) => {
-	Post.create({
-		title    : req.body.title,
-		post_url : req.body.post_url,
-		user_id  : req.body.user_id
-	})
-		.then((dbPostData) => res.json(dbPostData))
-		.catch((err) => {
-			console.log(err);
-			res.status(500).json(err);
-		});
-});
-
-router.put('/upvote', (req, res) => {
-	Post.upvote(req.body, { Vote })
-		.then((updatedPostData) => res.json(updatedPostData))
-		.catch((err) => {
-			console.log(err);
-			res.status(400).json(err);
-		});
-});
-
-router.put('/:id', (req, res) => {
-	Post.update(
-		{
-			title : req.body.title
-		},
-		{
-			where : {
-				id : req.params.id
-			}
-		}
-	)
-		.then((dbPostData) => {
-			if (!dbPostData) {
-				res.status(404).json({ message: 'No post found with this id' });
-				return;
-			}
-			res.json(dbPostData);
-		})
-		.catch((err) => {
-			console.log(err);
-			res.status(500).json(err);
-		});
-});
-
-router.delete('/:id', (req, res) => {
-	Post.destroy({
-		where : {
-			id : req.params.id
-		}
-	})
-		.then((dbPostData) => {
-			if (!dbPostData) {
-				res.status(404).json({ message: 'No post found with this id' });
-				return;
-			}
-			res.json(dbPostData);
-		})
-		.catch((err) => {
-			console.log(err);
-			res.status(500).json(err);
-		});
+// login
+router.get('/login', (req, res) => {
+	// check session variable...if user is logged in redirect to homepage
+	if (req.session.loggedIn) {
+		res.redirect('/');
+		return;
+	}
+	// otherwise render login page
+	res.render('login');
 });
 
 module.exports = router;
