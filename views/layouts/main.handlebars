@@ -14,8 +14,6 @@
         <a href="/">Just Tech News</a>
       </h1>
       <nav>
-        {{!-- logout route is not an actual page so use button element styled as link.  it will have an event listener that calls /logout route --}}
-        {{!-- variables passed to view templates are automatically passed to the main layout --}}
         {{#if loggedIn}}
         <a href="/dashboard">dashboard</a>
         <button id="logout" class="btn-no-style">logout</button>
@@ -31,7 +29,6 @@
       Thanks for visiting!
     </footer>
   </div>
-  {{!-- /logout route does not render it's own view so the front end script is included everywhere  --}}
   {{#if loggedIn}}
   <script src="/javascript/logout.js"></script>
   {{/if}}

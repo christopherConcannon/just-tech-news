@@ -4,9 +4,6 @@ const { Post, User, Comment } = require('../models');
 
 // homepage -- display index of all posts
 router.get('/', (req, res) => {
-	console.log(req.session);
-	// s%3AEm4S4x0Kv94N-IKMb4STuLfmPW16sJRM.bCJPsmDluLVHVSmefoiHc3XsquQPXqyyVjqftKunmBU
-
 	Post.findAll({
 		attributes : [
 			'id',
@@ -37,12 +34,11 @@ router.get('/', (req, res) => {
 		]
 	})
 		.then((dbPostData) => {
-			// pass a single post object into the homepage template
 			const posts = dbPostData.map((post) => post.get({ plain: true }));
-      res.render('homepage', { 
-        posts,
-        loggedIn: req.session.loggedIn
-      });
+			res.render('homepage', {
+				posts,
+				loggedIn : req.session.loggedIn
+			});
 		})
 		.catch((err) => {
 			console.log(err);
@@ -52,20 +48,7 @@ router.get('/', (req, res) => {
 
 // single-post
 router.get('/post/:id', (req, res) => {
-  // // hardcode to test route 
-	// const post = {
-	// 	id         : 1,
-	// 	post_url   : 'https://handlebarsjs.com/guide/',
-	// 	title      : 'Handlebars Docs',
-	// 	created_at : new Date(),
-	// 	vote_count : 10,
-	// 	comments   : [ {}, {} ],
-	// 	user       : {
-	// 		username : 'test_user'
-	// 	}
-  // };
-  
-  Post.findOne({
+	Post.findOne({
 		where      : {
 			id : req.params.id
 		},
@@ -95,26 +78,26 @@ router.get('/post/:id', (req, res) => {
 				attributes : [ 'username' ]
 			}
 		]
-  })
-    .then((dbPostData) => {
-      if (!dbPostData) {
-        res.status(404).json({ message: 'No post found with this id' });
-        return;
-      }
+	})
+		.then((dbPostData) => {
+			if (!dbPostData) {
+				res.status(404).json({ message: 'No post found with this id' });
+				return;
+			}
 
-      // serialize the data
-      const post = dbPostData.get({ plain: true });
+			// serialize the data
+			const post = dbPostData.get({ plain: true });
 
-      // pass data to template
-      res.render('single-post', { 
-        post,
-        loggedIn: req.session.loggedIn
-      });
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json(err);
-    });
+			// pass data to template
+			res.render('single-post', {
+				post,
+				loggedIn : req.session.loggedIn
+			});
+		})
+		.catch((err) => {
+			console.log(err);
+			res.status(500).json(err);
+		});
 });
 
 // login
