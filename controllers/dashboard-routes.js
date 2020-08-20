@@ -3,6 +3,7 @@ const sequelize = require('../config/connection');
 const { Post, User, Comment } = require('../models');
 const withAuth = require('../utils/auth');
 
+// GET /dashboard/  -- redirected on successful login/signup events in public/js/login.js and requested from dashboard button in nav
 router.get('/', withAuth, (req, res) => {
 	Post.findAll({
 		where      : {
@@ -39,7 +40,8 @@ router.get('/', withAuth, (req, res) => {
 	})
 		.then((dbPostData) => {
 			// serialize data before passing to template
-			const posts = dbPostData.map((post) => post.get({ plain: true }));
+      const posts = dbPostData.map((post) => post.get({ plain: true }));
+      // render template and pass through db data
 			res.render('dashboard', {
 				posts,
 				loggedIn : true
@@ -51,6 +53,7 @@ router.get('/', withAuth, (req, res) => {
 		});
 });
 
+// render edit post by id 
 router.get('/edit/:id', withAuth, (req, res) => {
 	Post.findOne({
 		where      : {

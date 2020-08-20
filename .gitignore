@@ -3,13 +3,7 @@ node_modules/
 
 .env
 
-<<<<<<< HEAD
-NOTES-&-QUESTIONS-ORM.txt
-ASSOCIATIONS-NOTES.txt
-
-=======
 # root
->>>>>>> develop
 server-ANNOTATED.js
 server-ANNOTATED-V2.js
 
