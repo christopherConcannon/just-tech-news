@@ -3,7 +3,7 @@ const sequelize = require('../config/connection');
 const { Post, User, Comment } = require('../models');
 const withAuth = require('../utils/auth');
 
-// GET /dashboard/  -- redirected on successful login/signup events in public/js/login.js and requested from dashboard button in nav
+// GET /dashboard -- redirected on successful login/signup events in public/js/login.js and requested from dashboard button in nav
 router.get('/', withAuth, (req, res) => {
 	Post.findAll({
 		where      : {
@@ -53,7 +53,7 @@ router.get('/', withAuth, (req, res) => {
 		});
 });
 
-// render edit post by id 
+// GET /dashboard/edit/1 -- render post form view by id 
 router.get('/edit/:id', withAuth, (req, res) => {
 	Post.findOne({
 		where      : {

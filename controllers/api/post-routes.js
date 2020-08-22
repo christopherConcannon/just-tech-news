@@ -3,6 +3,7 @@ const { Post, User, Vote, Comment } = require('../../models');
 const sequelize = require('../../config/connection');
 const withAuth = require('../../utils/auth');
 
+// GET /api/posts
 // router.get('/', (req, res) => {
 // 	console.log('====================');
 // 	Post.findAll({
@@ -41,6 +42,7 @@ const withAuth = require('../../utils/auth');
 // 		});
 // });
 
+// GET /api/posts/1
 // router.get('/:id', (req, res) => {
 // 	Post.findOne({
 // 		where      : {
@@ -86,6 +88,7 @@ const withAuth = require('../../utils/auth');
 // 		});
 // });
 
+// POST /api/posts
 router.post('/', withAuth, (req, res) => {
 	Post.create({
 		title    : req.body.title,
@@ -99,7 +102,7 @@ router.post('/', withAuth, (req, res) => {
 		});
 });
 
-// Post upvote -- called from public/javascript/upvote.js
+// PUT /api/posts/upvote --- post upvote -- called from public/javascript/upvote.js
 router.put('/upvote', withAuth, (req, res) => {
 	if (req.session) {
 		// pass session id along with all destructured properties on req.body
@@ -112,6 +115,7 @@ router.put('/upvote', withAuth, (req, res) => {
 	}
 });
 
+// PUT /api/posts/1
 router.put('/:id', (req, res) => {
 	Post.update(
 		{
@@ -136,6 +140,7 @@ router.put('/:id', (req, res) => {
 		});
 });
 
+// DELETE /api/posts/1
 router.delete('/:id', withAuth, (req, res) => {
 	Post.destroy({
 		where : {

@@ -95,6 +95,7 @@ router.put('/:id', withAuth, (req, res) => {
 		});
 });
 
+// DELETE /api/users/1
 router.delete('/:id', withAuth, (req, res) => {
 	Comment.destroy({
 		where : {
@@ -120,7 +121,7 @@ router.delete('/:id', withAuth, (req, res) => {
 	});
 });
 
-// login
+// POST /api/users/login -- login
 router.post('/login', (req, res) => {
 	// find user based on email
 	User.findOne({
@@ -153,6 +154,7 @@ router.post('/login', (req, res) => {
 	});
 });
 
+// POST /api/users/logout
 // logout -- if user is loggedIn, destroy session variables and reset cookie to clear session, then send res back to client so it can redirect user to homepage
 router.post('/logout', (req, res) => {
 	if (req.session.loggedIn) {
