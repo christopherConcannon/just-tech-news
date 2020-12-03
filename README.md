@@ -3,7 +3,7 @@
 ![MIT license badge](https://img.shields.io/badge/license-MIT-green)
 
 ## Description
-A minimalist social media application inspired by Hacker News that allows a user to post an article from another source and other users vote or comment on the post. 
+A minimalist social media application inspired by Hacker News that allows a user to post an article from another source and other users vote or comment on the post.   
 
 ##### Homescreen
 ![Homescreen Screenshot](./assets/images/screenshot.png)
@@ -12,7 +12,7 @@ A minimalist social media application inspired by Hacker News that allows a user
 ##### Create Post
 ![Create Post Screenshot](./assets/images/screenshot3.png)
 
-Visit site [here](https://afternoon-spire-62185.herokuapp.com/)
+Visit site [here](https://just-tech-news-xo.herokuapp.com/)
 
 ## Table of Contents
   * [Installation](#installation)
@@ -27,7 +27,7 @@ Visit site [here](https://afternoon-spire-62185.herokuapp.com/)
 Clone project to a directory on your local machine and cd into just-tech-news directory.  Run <$ npm install> to install dependencies.  See package.json for other available scripts.
 
 ## Usage
-Run <$ npm start> to launch application on localhost development server.  
+Run <$ npm start> to launch application on localhost development server.  View posts.  Create a user account.  Add posts.  Vote on other posts. 
 
 ## License 
 This project is covered under the MIT license 
