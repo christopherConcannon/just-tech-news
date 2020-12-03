@@ -142,22 +142,49 @@ router.put('/:id', (req, res) => {
 
 // DELETE /api/posts/1
 router.delete('/:id', withAuth, (req, res) => {
-	Post.destroy({
-		where : {
-			id : req.params.id
-		}
-	})
-		.then((dbPostData) => {
-			if (!dbPostData) {
-				res.status(404).json({ message: 'No post found with this id' });
-				return;
+		Post.destroy({
+			where : {
+				id : req.params.id
 			}
-			res.json(dbPostData);
 		})
-		.catch((err) => {
-			console.log(err);
-			res.status(500).json(err);
-		});
-});
+			.then((dbPostData) => {
+				if (!dbPostData) {
+					res.status(404).json({ message: 'No post found with this id' });
+					return;
+				}
+				res.json(dbPostData);
+			})
+			.catch((err) => {
+				console.log(err);
+				res.status(500).json(err);
+			});
+	});
+
 
 module.exports = router;
+
+// DELETE /api/users/1
+// router.delete('/:id', withAuth, (req, res) => {
+// 	Comment.destroy({
+// 		where : {
+// 			user_id : req.params.id
+// 		}
+// 	}).then(() => {
+// 		User.destroy({
+// 			where : {
+// 				id : req.params.id
+// 			}
+// 		})
+// 			.then((dbUserData) => {
+// 				if (!dbUserData) {
+// 					res.status(404).json({ message: 'No user found with this id' });
+// 					return;
+// 				}
+// 				res.json(dbUserData);
+// 			})
+// 			.catch((err) => {
+// 				console.log(err);
+// 				res.status(500).json(err);
+// 			});
+// 	});
+// });
